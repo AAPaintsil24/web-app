@@ -1,16 +1,22 @@
+pipeline {
+    agent any
+    
+    tools {
+        maven 'maven'
+    }
+    
+    stages {
+        stage('git checkout'){
+            steps{
+                git branch: 'main', url: 'https://github.com/AAPaintsil24/web-app.git'
+            }
+        }
+        
+        stage('clean and package'){
+            steps{
+                sh 'mvn clean package'
+            }
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-[
+    }
+}
