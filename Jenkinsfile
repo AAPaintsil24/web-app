@@ -1,24 +1,23 @@
 pipeline {
-  agent any {
+    agent any
 
-  tools {
-    maven 'maven'
-  }
-  stages {
-    stage('git checkout') {
-      steps {
-        git branch: 'main', url: 'https://github.com/AAPaintsil24/web-app.git'
-      }
+    tools {
+        maven 'maven'
     }
-    stage('build') {
-      steps {
-        sh 'mvn clean package'
-      }
+
+    stages {
+        stage('git checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/AAPaintsil24/web-app.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
     }
-  }
-  }
 }
-
 
 
 
