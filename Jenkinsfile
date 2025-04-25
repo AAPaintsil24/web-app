@@ -10,7 +10,11 @@ pipeline {
         git branch: 'main', url: 'https://github.com/AAPaintsil24/web-app.git'
       }
     }
-    
+    stage('build') {
+      steps {
+        sh 'mvn clean package'
+      }
+    }
   }
   }
 }
