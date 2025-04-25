@@ -18,5 +18,18 @@ pipeline {
             }
         }
 
+        stage('code analysis'){
+            environment {
+                ScannerHome = tool 'albertsonarscanner'
+            }
+            steps{
+                script{
+                    withSonarQubeEnv('albertsonarserver'){
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=paintsil-webapp" 
+                    }
+                }
+            }
+        }
+
     }
 }
