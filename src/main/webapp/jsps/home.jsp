@@ -33,7 +33,7 @@ out.println("Server Host Name :: "+inetAddress.getHostName());
 	</span>
 	<span style="font-weight: bold;">
                 JOMACS IT SOLUTIONS INC., 
-		Calgary, Alberta, Canada
+		Calgary, Alberta, CANADA
 		+1 587 402 1744,
 		info@jomacsit.com
 		<br>
