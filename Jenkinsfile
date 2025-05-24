@@ -16,5 +16,17 @@ pipeline{
         sh 'mvn clean package'
       }
     }
+    stage('code analysis'){
+      environment{
+        ScannerHome = tool "sonarscanner"
+      }
+      steps{
+        script{
+          withSonarQubeEnv('sonarserver'){
+            sh "${ScannerHome}/bin/sonar-scanner -Dsonar.projectKey=lilian-love"
+          }
+        }
+      }
+    }
   }
 }
