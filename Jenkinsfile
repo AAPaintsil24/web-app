@@ -6,7 +6,7 @@ pipeline{
   }
 
   stages {
-    stgae('git clone'){
+    stage('git clone'){
       steps {
         git branch: 'main', url: 'https://github.com/AAPaintsil24/web-app.git'
       }
