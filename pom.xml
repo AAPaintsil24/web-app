@@ -97,7 +97,7 @@
 	    <repository>
 	      <id>nexus</id>
 	      <name>JOMACS Releases Nexus Repository</name>
-	      <url>http://13.58.218.177:8081/repository/albert-fs/</url>
+	      <url>http://3.147.85.91:8081/repository/albert-webapp/</url>
 	    </repository>
 	    
 	    <snapshotRepository>
