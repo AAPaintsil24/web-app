@@ -1,31 +1,35 @@
-pipeline{
+pipeline {
     agent any
+    
     tools{
-        maven "mymaven"
+        maven "maven"
     }
-    stages{
-        stage('git checkout'){
+    
+    stages {
+        stage("git checkout"){
             steps{
-                git branch: 'main', credentialsId: 'github', url: 'https://github.com/AAPaintsil24/web-app.git'
+                git branch: 'main', url: 'https://github.com/AAPaintsil24/web-app.git'
             }
         }
-        stage('clean and package'){
+        stage("clean and package"){
             steps{
-                sh 'mvn clean package'
+                sh "mvn clean package"
             }
         }
-        stage('code analyis'){
-            environment{
-                scannerHome = tool 'sonarscanner'
+        
+        stage("code analysis"){
+            environment {
+                ScannerHome = tool "codescan"
             }
-            steps{
+            steps {
                 script{
-                    withSonarQubeEnv('sonarserver'){
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=fiifi-webapp"
+                    withSonarQubeEnv("sonarserver"){
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=albertcloudz"
                     }
                 }
             }
         }
+        
         stage('Quality gate'){
             steps{
                 timeout(time: 1, unit: 'HOURS'){
@@ -33,20 +37,24 @@ pipeline{
                 }
             }
         }
-        stage('nexus uploads'){
+        
+        stage("nexus uploads"){
             steps{
-                nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: '/var/lib/jenkins/workspace/albert-pipeline/target/web-app.war', type: 'war']], credentialsId: 'nexus-credentials', groupId: 'com.mt', nexusUrl: '3.147.85.91:8081/repository/albert-webapp/', nexusVersion: 'nexus3', protocol: 'http', repository: 'albert-webapp', version: '3.0.6-RELEASE'
+                nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: '/var/lib/jenkins/workspace/albert-pipeline/target/web-app.war', type: 'war']], credentialsId: 'nexus-credentials', groupId: 'com.mt', nexusUrl: '16.16.149.167:8081/repository/albertcloudz/', nexusVersion: 'nexus3', protocol: 'http', repository: 'albertcloudz', version: '3.0.6-RELEASE'
             }
         }
-        stage('deploy to production'){
+        
+        stage("deployment to production"){
             steps{
-                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat_credentials', path: '', url: 'http://18.219.136.173:8080/')], contextPath: null, war: 'target/web-app.war'
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat_credentials', path: '', url: 'http://13.50.250.43:8080/')], contextPath: null, war: 'target/web-app.war'
             }
         }
     }
+    
     post{
-         success { slackSend(color: 'good', message: "success: ${env.JOB_NAME} #${env.BUILD_NUMBER} - ${env.BUILD_URL}") } 
-         failure { slackSend(color: 'danger', message: "failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} - ${env.BUILD_URL}") } 
-         aborted { slackSend(color: 'warning', message: "aborted: ${env.JOB_NAME} #${env.BUILD_NUMBER} - ${env.BUILD_URL}") }
+         success { slackSend(color: 'good', message: "build success: ${env.JOB_NAME} #${env.BUILD_NUMBER}") } 
+         failure { slackSend(color: 'danger', message: "build failure: ${env.JOB_NAME} #${env.BUILD_NUMBER}") } 
+         aborted { slackSend(color: 'warning', message: "build aborted: ${env.JOB_NAME} #${env.BUILD_NUMBER}") }
     }
+    
 }
