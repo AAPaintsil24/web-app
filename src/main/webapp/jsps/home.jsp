@@ -1,51 +1,106 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.net.*" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>JOMACS IT SOLUTIONS- Home Page</title>
-<link href="images/DP black.png" rel="icon">
-</head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>DEVOPS Albert | Cloud Automation & Engineering Portfolio</title>
+    <link href="images/devops.png" rel="icon">
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            text-align: center;
+            padding: 30px;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        hr {
+            border: 0;
+            height: 2px;
+            background: #3498db;
+            margin: 30px 0;
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #777;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .server-info {
+            background: #fff;
+            display: inline-block;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .contact-section {
+            margin-top: 25px;
+        }
+        .social-links a {
+            margin: 0 10px;
+            color: #333;
+            font-weight: bold;
+        }
+        .social-links a:hover {
+            color: #3498db;
+        }
+    </style>
 </head>
 <body>
-<h1 align="center">Welcome to JOMACS IT SOLUTIONS INC. </h1>
-<h1 align="center">We are a leading provider of technology solutions for companies and individuals. We specialize in web development, software engineering, DevOps engineering, data science and corporate training and workshops. Our team of experts is dedicated to delivering the highest quality services that are tailored to meet the unique needs of each of our clients. With our innovative solutions and commitment to excellence, we help our clients to achieve their goals and stay ahead of the competition. You will love our service. </h1>
-<hr>
-<br>
-	<h1><h3> Server Side IP Address </h3><br>
+    <h1>🚀 Welcome to <span style="color:#3498db;">DEVOPS Albert</span></h1>
+    <h2>Building Scalable, Automated, and Cloud-Native Solutions</h2>
+    <p>
+        I’m <strong>Albert</strong>, a passionate <strong>DevOps Engineer</strong> focused on creating reliable, automated CI/CD pipelines, 
+        containerized applications, and cloud infrastructure.  
+        This web application demonstrates a complete CI/CD pipeline — deployed automatically from Jenkins to Tomcat on AWS.
+    </p>
 
-<% 
-String ip = "";
-InetAddress inetAddress = InetAddress.getLocalHost();
-ip = inetAddress.getHostAddress();
-out.println("Server Host Name :: "+inetAddress.getHostName()); 
-%>
-<br>
-<%out.println("Server IP Address :: "+ip);%>
-		
-</h1>
-	
-<hr>
-<div style="text-align: center;">
-	<span>
-		<img src="images/DP black.png" alt="" width="150">
-	</span>
-	<span style="font-weight: bold;">
-                JOMACS IT SOLUTIONS INC., 
-		Calgary, Alberta, Canada
-		+1 587 402 1744,
-		info@jomacsit.com
-		<br>
-		<a href="mailto:info@jomacsit.com">Mail to JOMACS IT SOLUTIONS INC.</a>
-	</span>
-</div>
-<hr>
-	<p> Service : <a href="services/employee/getEmployeeDetails">Get Employee Details </p>
-<hr>
-<hr>
-<p align=center>JOMACS IT SOLUTIONS - Consultantancy, Training and Software Development</p>
-<p align=center><small>Copyrights 2022 by <a href="http://jomacsit.com/">JOMACS IT SOLUTIONS INC.</a> </small></p>
+    <hr>
 
+    <div class="server-info">
+        <h3>Server Environment Details</h3>
+        <%
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            String ip = inetAddress.getHostAddress();
+            out.println("Server Host Name: " + inetAddress.getHostName() + "<br>");
+            out.println("Server IP Address: " + ip + "<br>");
+        %>
+    </div>
+
+    <hr>
+
+    <div class="contact-section">
+        <img src="images/devops.png" alt="DevOps Logo" width="120"><br><br>
+        <p><strong>DEVOPS Albert</strong><br>
+        Cloud & DevOps Engineer<br>
+        AWS | Jenkins | Docker |GitHub Actions | Terraform | Kubernetes | CI/CD Automation<br>
+        📍 Accra, Ghana<br>
+        📧 <a href="mailto:albertarko3@gmail.com">albertarko3@gmail.com</a></p>
+    </div>
+
+    <div class="social-links">
+        🌐 <a href="https://www.linkedin.com/in/albert-paintsil-arko" target="_blank">LinkedIn</a> |
+        💻 <a href="https://github.com/AAPaintsil24" target="_blank">GitHub</a>
+    </div>
+
+    <hr>
+
+    <p>🔍 Service Endpoint: <a href="services/employee/getEmployeeDetails">Get Employee Details</a></p>
+
+    <div class="footer">
+        <p>✅ Deployed via Jenkins CI/CD Pipeline on AWS EC2 with Apache Tomcat</p>
+        <p>© 2025 by <strong>DEVOPS Albert</strong>. All Rights Reserved.</p>
+    </div>
 </body>
 </html>
+
