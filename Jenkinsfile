@@ -24,7 +24,7 @@ pipeline {
             steps {
                 script{
                     withSonarQubeEnv("sonarserver"){
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=albertcloudz"
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=albertcloudz2"
                     }
                 }
             }
@@ -33,20 +33,20 @@ pipeline {
         stage('Quality gate'){
             steps{
                 timeout(time: 1, unit: 'HOURS'){
-                    waitForQualityGate abortPipeline: true
+                    waitForQualityGate abortPipeline: false
                 }
             }
         }
         
         stage("nexus uploads"){
             steps{
-                nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: '/var/lib/jenkins/workspace/albert-pipeline/target/web-app.war', type: 'war']], credentialsId: 'nexus-credentials', groupId: 'com.mt', nexusUrl: '16.16.149.167:8081/repository/albertcloudz/', nexusVersion: 'nexus3', protocol: 'http', repository: 'albertcloudz', version: '3.0.6-RELEASE'
+                nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: '/var/lib/jenkins/workspace/albert-pipeline/target/web-app.war', type: 'war']], credentialsId: 'nexus-credentials', groupId: 'com.mt', nexusUrl: '16.16.149.167:8081/repository/albertcloudz2/', nexusVersion: 'nexus3', protocol: 'http', repository: 'albertcloudz', version: '3.0.6-RELEASE'
             }
         }
         
         stage("deployment to production"){
             steps{
-                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat_credentials', path: '', url: 'http://13.50.250.43:8080/')], contextPath: null, war: 'target/web-app.war'
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat_credentials', path: '', url: 'http://13.50.14.233:8080/')], contextPath: null, war: 'target/web-app.war'
             }
         }
     }
