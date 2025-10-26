@@ -95,7 +95,7 @@ The gate helps ensure that every build meets baseline standards before deploymen
 | **Coverage** | Test coverage of new and changed code | Greater than **80%** |
 
 📸 **Screenshot:**
-![[SonarQube Quality Gate Dashboard](Screenshots/sonarqube_metrics.png)
+![SonarQube Quality Gate Dashboard](Screenshots/sonarqube_metrics.png)
 
 This gate was assigned to the main project, ensuring that any build failing to meet these conditions will **not pass** the Jenkins CI pipeline.  
 This setup promotes better **code security**, **maintainability**, and **team accountability** in the development lifecycle.
