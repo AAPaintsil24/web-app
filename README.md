@@ -68,7 +68,6 @@ Steps:
 ![SonarQube Credentials Configuration in Jenkins](Screenshots/jenkins-sonarqube.png)
 
 Once configured, the Jenkins pipeline can reference the server using:
-```groovy
 stage("code analysis"){
             environment {
                 ScannerHome = tool "codescan"
@@ -95,13 +94,14 @@ The gate helps ensure that every build meets baseline standards before deploymen
 | **Duplicated Lines (%)** | Percentage of duplicated code | Less than **3%** |
 | **Coverage** | Test coverage of new and changed code | Greater than **80%** |
 
-📸 **Screenshot:**  
-![SonarQube Quality Gate Dashboard](Screenshots/sonarqube metrics.png)
+📸 **Screenshot:**
+![[SonarQube Quality Gate Dashboard](Screenshots/sonarqube_metrics.png)
 
 This gate was assigned to the main project, ensuring that any build failing to meet these conditions will **not pass** the Jenkins CI pipeline.  
 This setup promotes better **code security**, **maintainability**, and **team accountability** in the development lifecycle.
 
 This setup ensures that Jenkins pipelines automatically trigger SonarQube analysis for every commit, providing developers with immediate feedback on code quality and technical debt.
+
 
 ## 🏗️ Nexus Repository Setup
 
@@ -165,7 +165,6 @@ After Jenkins builds the code, runs SonarQube analysis, and uploads the artifact
 2. **User Configuration:**  
    A deployment user was created in the `tomcat-users.xml` file with the `manager-script` role to enable Jenkins to deploy automatically via the **Deploy to Container** plugin.
 
-   ```xml
    <role rolename="manager-script"/>
    <user username="deployer" password="your_password" roles="manager-script"/>
 ### 🧩 Jenkins Integration
