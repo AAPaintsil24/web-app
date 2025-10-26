@@ -65,12 +65,192 @@ Steps:
 4. Add and select the **Authentication Token** generated from SonarQube under Jenkins credentials
 
 📸 **Screenshot:**  
-![SonarQube Credentials Configuration in Jenkins](images/sonarqube/jenkins-sonar-credentials.png)
+![SonarQube Credentials Configuration in Jenkins](Screenshots/jenkins-sonarqube.png)
 
 Once configured, the Jenkins pipeline can reference the server using:
 ```groovy
-withSonarQubeEnv('sonarserver') {
-    sh 'mvn sonar:sonar'
-}
+stage("code analysis"){
+            environment {
+                ScannerHome = tool "codescan"
+            }
+            steps {
+                script{
+                    withSonarQubeEnv("sonarserver"){
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=projectname"
+                    }
+                }
+            }
+        }
+
+### 🧱 Custom Quality Gate Configuration
+
+SonarQube was configured with a **custom Quality Gate** focused on essential metrics that define clean, maintainable, and secure code.  
+The gate helps ensure that every build meets baseline standards before deployment.
+
+**Quality Gate Metrics:**
+| Metric | Description | Target |
+|--------|--------------|--------|
+| **Issues** | Overall code issues detected (bugs, code smells, vulnerabilities) |
+| **Security Hotspots Reviewed** | Number of security hotspots manually reviewed | 100% reviewed |
+| **Duplicated Lines (%)** | Percentage of duplicated code | Less than **3%** |
+| **Coverage** | Test coverage of new and changed code | Greater than **80%** |
+
+📸 **Screenshot:**  
+![SonarQube Quality Gate Dashboard](Screenshots/sonarqube metrics.png)
+
+This gate was assigned to the main project, ensuring that any build failing to meet these conditions will **not pass** the Jenkins CI pipeline.  
+This setup promotes better **code security**, **maintainability**, and **team accountability** in the development lifecycle.
+
 This setup ensures that Jenkins pipelines automatically trigger SonarQube analysis for every commit, providing developers with immediate feedback on code quality and technical debt.
 
+## 🏗️ Nexus Repository Setup
+
+**Nexus Repository Manager** was used as the artifact repository to store and version the `.war` files generated from Jenkins builds.  
+This ensures consistent artifact management, traceability, and smooth deployment to the Tomcat server.
+
+## 🏗️ Nexus Repository Setup
+
+**Nexus Repository Manager** was used as the artifact repository to store and version the `.war` files generated from Jenkins builds.  
+This ensures consistent artifact management, traceability, and smooth deployment to the Tomcat server.
+
+### ⚙️ Configuration Overview
+
+1. **Installation:**  
+   Nexus was installed on an **AWS EC2 Ubuntu t3.medium instance** using the official [Sonatype Nexus 3.x distribution](https://help.sonatype.com/repomanager3/installation).  
+   After installation, the service was configured to start automatically and exposed on port `8081`.
+
+2. **Repository Setup:**  
+   A new hosted **Maven (release)** repository was created and named: albertcloudz
+
+This repository serves as the destination for the `.war` artifacts uploaded from Jenkins after successful builds.
+
+3. **Jenkins Integration:**  
+In Jenkins, the **Nexus Artifact Uploader Plugin** was configured with:
+- **Repository URL:** `http://<nexus-server-ip>:8081/repository/albertcloudz/`  
+- **Credentials:** A Nexus username and token securely stored in Jenkins credentials  
+- **GroupId / ArtifactId / Version:** Automatically mapped from the project’s `pom.xml`  
+
+Once the build is complete, Jenkins uploads the packaged `.war` file to Nexus.
+
+### 📦 Artifact Storage Example
+
+Below is an example of the deployed artifact visible in the Nexus dashboard:
+
+📸 **Screenshot:**  
+![Nexus Repository Artifact](Screenshots/nexus-artifact-deployed.png)
+
+| Attribute | Example |
+|------------|----------|
+| **Group ID** | `com.mt` |
+| **Artifact ID** | `maven-web-application` |
+| **Version** | `3.0.6-RELEASE` |
+| **File Type** | `.war` |
+| **Repository** | `albertcloudz` |
+
+This setup enables reliable artifact storage, supports rollback in case of failed deployments, and improves overall CI/CD workflow efficiency.
+
+## 🚀 Apache Tomcat Deployment
+
+**Apache Tomcat** serves as the final stage of this CI/CD pipeline — the environment where the packaged `.war` file is deployed and made accessible to users.  
+After Jenkins builds the code, runs SonarQube analysis, and uploads the artifact to Nexus, it automatically deploys the web application to **Tomcat 9** hosted on an **AWS EC2 t3.medium (Ubuntu)** instance.
+
+---
+
+### ⚙️ Configuration Overview
+
+1. **Installation:**  
+   Tomcat 9 was installed on an Ubuntu-based EC2 instance.  
+   For full installation instructions, follow the [official Apache Tomcat documentation](https://tomcat.apache.org/tomcat-9.0-doc/setup.html).
+
+2. **User Configuration:**  
+   A deployment user was created in the `tomcat-users.xml` file with the `manager-script` role to enable Jenkins to deploy automatically via the **Deploy to Container** plugin.
+
+   ```xml
+   <role rolename="manager-script"/>
+   <user username="deployer" password="your_password" roles="manager-script"/>
+### 🧩 Jenkins Integration
+
+In Jenkins, the **Deploy to Container Plugin** was configured as follows:
+
+| Configuration Item | Value |
+|--------------------|--------|
+| **Container Type** | Tomcat 9.x |
+| **Manager URL** | `http://<ec2-public-ip>:8080/manager/text` |
+| **Credentials** | `deployer` *(stored securely under Jenkins credentials)* |
+| **WAR File Path** | `target/web-app.war` |
+
+
+---
+
+### 🔒 Security Group Configuration
+
+Port **8080** was opened in the EC2 instance’s **security group** to allow external access to both the Tomcat Manager interface and the deployed web application.
+
+---
+
+### 🌐 Deployment Verification
+
+Once Jenkins completes the pipeline successfully, the application is deployed automatically to **Apache Tomcat**.  
+You can verify the deployment through the **Tomcat Web Application Manager**, which displays the deployed web applications, their paths, and running statuses.
+
+📸 **Screenshot:**  
+*Tomcat Web Application Manager showing the deployed application*  
+![Tomcat Manager](Screenshots/tomcat.png)
+
+---
+
+You can also access the deployed web application directly via the EC2 public IP and Tomcat port: 8080
+
+📸 **Screenshot:**  
+*Deployed web application running successfully on Tomcat*  
+![Deployed Web App](Screenshots/deployed-webapp.png)
+
+---
+
+### ✅ Summary
+
+This configuration ensures a **fully automated CI/CD delivery process** where:
+
+- 🧱 **Jenkins** builds and tests the source code  
+- 🧩 **SonarQube** performs code quality checks  
+- 🏗️ **Nexus** stores versioned build artifacts  
+- 🚀 **Tomcat** automatically deploys the final `.war` file  
+
+## 💬 Slack Integration & Final Pipeline Verification
+
+To complete the CI/CD setup, Slack was integrated with Jenkins to provide **real-time notifications** on build and deployment status.  
+This ensures visibility for the development team without needing to check the Jenkins dashboard manually.
+
+---
+
+### 🚦 Jenkins Pipeline Stage View
+
+After triggering the pipeline, Jenkins automatically executed all configured stages — including build, test, SonarQube code analysis, artifact upload, and deployment.  
+The **Stage View** clearly shows the sequence and success of each stage.
+
+📸 **Screenshot:**  
+*Jenkins Pipeline Stage View showing successful stages*  
+![Jenkins Pipeline Stage View](Screenshots/jenkins-stageview.png)
+
+---
+
+### 🔔 Slack Build Notification
+
+Once the pipeline completed successfully, Jenkins sent an automatic notification to the connected **Slack channel**.  
+This message confirmed that all stages were executed without error, marking the build as a success.
+
+📸 **Screenshot:**  
+*Slack channel showing build success notification from Jenkins*  
+![Slack Success Notification](Screenshots/slack-notification.png)
+
+---
+
+### ✅ Summary
+
+With this integration:
+- Jenkins manages the entire CI/CD pipeline.
+- Slack provides instant build status alerts.
+- The pipeline flow (Build → Test → Code Analysis → Deploy) runs smoothly and visibly.
+- This closes the loop of **continuous integration and delivery with automated team communication**.
+
+---
