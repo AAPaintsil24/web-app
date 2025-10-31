@@ -1,27 +1,19 @@
-# 1️⃣ Use Maven to build your Java app
-FROM maven:3.9.6-eclipse-temurin-17 AS builder
-
-# Set workdir
-WORKDIR /app
-
-# Copy your project files (src, pom.xml, etc.)
-COPY . .
-
-# Run Maven build (creates a WAR file)
-RUN mvn clean package
-
-# 2️⃣ Use Tomcat to deploy the built app
+# Use the official Tomcat 9 image as the base
 FROM tomcat:9.0-jdk17-temurin
 
-# Remove default webapps (optional)
+# Maintainer information
+LABEL maintainer="albertarko3@gmail.com"
+LABEL project="Java Web App CI/CD"
+
+# Remove default ROOT webapp (optional)
 RUN rm -rf /usr/local/tomcat/webapps/*
 
+# Copy the WAR file from the Jenkins build context to Tomcat's webapps directory
+COPY target/web-app.war /usr/local/tomcat/webapps/web-app.war
 
-
-# Copy WAR file from the build stage into Tomcat
-COPY --from=builder /app/target/web-app.war /usr/local/tomcat/webapps/ROOT.war
-
-# Expose Tomcat default port
+# Expose Tomcat's default port
 EXPOSE 8080
 
+# Start Tomcat
+CMD ["catalina.sh", "run"]
 

@@ -40,13 +40,32 @@ pipeline {
         
         stage("nexus uploads"){
             steps{
-                nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: '/var/lib/jenkins/workspace/albert-pipeline/target/web-app.war', type: 'war']], credentialsId: 'nexus-credentials', groupId: 'com.mt', nexusUrl: '16.16.208.176:8081/repository/albertcloudz2/', nexusVersion: 'nexus3', protocol: 'http', repository: 'albertcloudz2', version: '3.0.6-RELEASE'
+                nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: '/var/lib/jenkins/workspace/albert-pipeline/target/web-app.war', type: 'war']], credentialsId: 'nexus-credentials', groupId: 'com.mt', nexusUrl: '16.16.98.219:8081/repository/albertcloudz2/', nexusVersion: 'nexus3', protocol: 'http', repository: 'albertcloudz2', version: '3.0.6-RELEASE'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    docker.build "albertarko/albertdevops:1"
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'docker-credentials') {
+                        docker.image("albertarko/albertdevops:1").push()
+                    }
+                }
             }
         }
         
         stage("deployment to production"){
             steps{
-                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat_credentials', path: '', url: 'http://16.16.233.13:8080/')], contextPath: null, war: 'target/web-app.war'
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat_credentials', path: '', url: 'http://16.16.200.185:8080/')], contextPath: null, war: 'target/web-app.war'
             }
         }
     }
