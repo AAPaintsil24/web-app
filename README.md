@@ -220,16 +220,15 @@ DockerHub credentials were securely stored in Jenkins under **Manage Jenkins →
 📸 **Screenshot:**  
 ![Jenkins Docker Credentials Configuration](Screenshots/jenkins-docker-credentials.png)
 
----
+
 
 ### 📦 DockerHub Repository (Before Push)
 
 Before the Jenkins build, the DockerHub repository was empty — showing that no image had been uploaded yet.
 
 📸 **Screenshot:**  
-![DockerHub Empty Repository](Screenshots/Initial dockerhub page.png)
+![DockerHub Empty Repository](Screenshots/Initial-dockerhub-page.png)
 
----
 
 ### 🚧 Failed Docker Build and Push Attempt
 
@@ -250,7 +249,7 @@ This time, it successfully **built** and **pushed** the image to DockerHub.
 ![Jenkins Pipeline Success Docker Build](Screenshots/jenkins-success-docker.png)
 
 📸 **Screenshot:**  
-![Docker Update with albertdevops Image](Screenshots/uploaded albertdevops.png)
+![Docker Update with albertdevops Image](Screenshots/uploaded-albertdevops.png)
 
 **Build Log Output:**
 ```bash
@@ -265,10 +264,14 @@ This time, it successfully **built** and **pushed** the image to DockerHub.
 
 This configuration ensures a **fully automated CI/CD delivery process** where:
 
+### ⚙️ Toolchain Overview
+
 - 🧱 **Jenkins** builds and tests the source code  
 - 🧩 **SonarQube** performs code quality checks  
 - 🏗️ **Nexus** stores versioned build artifacts  
+- 🐳 **Docker** builds container images and pushes them to DockerHub  
 - 🚀 **Tomcat** automatically deploys the final `.war` file  
+- 💬 **Slack** sends real-time build status notifications 
 
 ## 💬 Slack Integration & Final Pipeline Verification
 
@@ -284,7 +287,7 @@ The **Stage View** clearly shows the sequence and success of each stage.
 
 📸 **Screenshot:**  
 *Jenkins Pipeline Stage View showing successful stages*  
-![Jenkins Pipeline Stage View](Screenshots/jenkins-stageview.png)
+![Jenkins Pipeline Stage View](Screenshots/final-jenkins-display.png)
 
 
 ### 🔔 Slack Build Notification
@@ -294,7 +297,7 @@ This message confirmed that all stages were executed without error, marking the 
 
 📸 **Screenshot:**  
 *Slack channel showing build success notification from Jenkins*  
-![Slack Success Notification](Screenshots/slack-notification.png)
+![Slack Success Notification](Screenshots/final-slack-display.png)
 
 ---
 
