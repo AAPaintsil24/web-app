@@ -252,7 +252,7 @@ This time, it successfully **built** and **pushed** the image to DockerHub.
 ![Docker Update with albertdevops Image](Screenshots/uploaded-albertdevops.png)
 
 **Build Log Output:**
-```bash
+bash
 + docker build -t albertarko/albertdevops:1 .
 + docker push albertarko/albertdevops:1
 
@@ -278,7 +278,7 @@ This configuration ensures a **fully automated CI/CD delivery process** where:
 To complete the CI/CD setup, Slack was integrated with Jenkins to provide **real-time notifications** on build and deployment status.  
 This ensures visibility for the development team without needing to check the Jenkins dashboard manually.
 
----
+
 
 ### 🚦 Jenkins Pipeline Stage View
 
@@ -299,7 +299,7 @@ This message confirmed that all stages were executed without error, marking the 
 *Slack channel showing build success notification from Jenkins*  
 ![Slack Success Notification](Screenshots/final-slack-display.png)
 
----
+
 
 ### ✅ Summary
 
@@ -309,4 +309,3 @@ With this integration:
 - The pipeline flow (Build → Test → Code Analysis → Deploy) runs smoothly and visibly.
 - This closes the loop of **continuous integration and delivery with automated team communication**.
 
----
