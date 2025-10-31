@@ -206,21 +206,79 @@ You can also access the deployed web application directly via the EC2 public IP 
 
 ---
 
+## 🐳 Docker Build and Push Integration
+
+After everything, I felt Docker had to be integrated into the CI/CD pipeline.  
+This stage automates building Docker images from the project source and pushing them to **DockerHub** upon successful build completion.
+
+---
+
+### ⚙️ Jenkins Docker Credentials Setup
+
+DockerHub credentials were securely stored in Jenkins under **Manage Jenkins → Credentials** to authenticate image uploads during the pipeline run.
+
+📸 **Screenshot:**  
+![Jenkins Docker Credentials Configuration](Screenshots/jenkins-docker-credentials.png)
+
+
+
+### 📦 DockerHub Repository (Before Push)
+
+Before the Jenkins build, the DockerHub repository was empty — showing that no image had been uploaded yet.
+
+📸 **Screenshot:**  
+![DockerHub Empty Repository](Screenshots/Initial-dockerhub-page.png)
+
+
+### 🚧 Failed Docker Build and Push Attempt
+
+The first pipeline run failed due to Docker not being available on the Jenkins build node.  
+The error `docker: not found` confirmed that the Docker CLI was missing in the environment.
+
+📸 **Screenshot:**  
+![Jenkins Pipeline Failed Docker Build](Screenshots/jenkins-failed-docker.png)
+
+---
+
+### ✅ Successful Docker Build and Push
+
+After installing Docker and reconfiguring Jenkins environment variables, the pipeline was re-run.  
+This time, it successfully **built** and **pushed** the image to DockerHub.
+
+📸 **Screenshot:**  
+![Jenkins Pipeline Success Docker Build](Screenshots/jenkins-success-docker.png)
+
+📸 **Screenshot:**  
+![Docker Update with albertdevops Image](Screenshots/uploaded-albertdevops.png)
+
+**Build Log Output:**
+bash
++ docker build -t albertarko/albertdevops:1 .
++ docker push albertarko/albertdevops:1
+
+
+
+
+
 ### ✅ Summary
 
 This configuration ensures a **fully automated CI/CD delivery process** where:
 
+### ⚙️ Toolchain Overview
+
 - 🧱 **Jenkins** builds and tests the source code  
 - 🧩 **SonarQube** performs code quality checks  
 - 🏗️ **Nexus** stores versioned build artifacts  
+- 🐳 **Docker** builds container images and pushes them to DockerHub  
 - 🚀 **Tomcat** automatically deploys the final `.war` file  
+- 💬 **Slack** sends real-time build status notifications 
 
 ## 💬 Slack Integration & Final Pipeline Verification
 
 To complete the CI/CD setup, Slack was integrated with Jenkins to provide **real-time notifications** on build and deployment status.  
 This ensures visibility for the development team without needing to check the Jenkins dashboard manually.
 
----
+
 
 ### 🚦 Jenkins Pipeline Stage View
 
@@ -229,9 +287,8 @@ The **Stage View** clearly shows the sequence and success of each stage.
 
 📸 **Screenshot:**  
 *Jenkins Pipeline Stage View showing successful stages*  
-![Jenkins Pipeline Stage View](Screenshots/jenkins-stageview.png)
+![Jenkins Pipeline Stage View](Screenshots/final-jenkins-display.png)
 
----
 
 ### 🔔 Slack Build Notification
 
@@ -240,9 +297,9 @@ This message confirmed that all stages were executed without error, marking the 
 
 📸 **Screenshot:**  
 *Slack channel showing build success notification from Jenkins*  
-![Slack Success Notification](Screenshots/slack-notification.png)
+![Slack Success Notification](Screenshots/final-slack-display.png)
 
----
+
 
 ### ✅ Summary
 
@@ -252,4 +309,3 @@ With this integration:
 - The pipeline flow (Build → Test → Code Analysis → Deploy) runs smoothly and visibly.
 - This closes the loop of **continuous integration and delivery with automated team communication**.
 
----
